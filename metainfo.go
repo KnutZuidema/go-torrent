@@ -1,5 +1,9 @@
 package torrent
 
+import (
+	"github.com/KnutZuidema/go-torrent/benconding"
+)
+
 // Metainfo files (also known as .torrent files) are bencoded dictionaries
 type Metainfo struct {
 	// The URL of the tracker.
@@ -55,4 +59,12 @@ type File struct {
 	// A list of UTF-8 encoded strings corresponding to subdirectory names, the last of which is the actual file name
 	// (a zero length list is an error case).
 	Path []string `bencode:"path"`
+}
+
+func NewMetainfoFromBytes(data []byte) (*Metainfo, error) {
+	var info Metainfo
+	if err := benconding.Unmarshal(data, &info); err != nil {
+		return nil, err
+	}
+	return &info, nil
 }
