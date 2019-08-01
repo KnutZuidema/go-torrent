@@ -13,15 +13,25 @@ type Unmarshaler interface {
 }
 
 // Unmarshal decodes data in the bencodeing format into a given object.
+//
 // Returns ErrEmptyData if the data is empty
+//
 // Returns an error if the data is not a valid bencoded object
+//
 // Returns ErrRemainingData if the data is not fully consumed after decoding is complete
+//
 // Returns ErrNonPointer if the target is not a pointer
+//
 // Returns ErrInvalidType if the target type is not valid for bencoding, namely float64, float32, complex128, complex64
+//
 // Returns an error if the data does not represent an object of the target type (structs count as a single type)
+//
 // Returns ErrNonStringKey if the key type of a map is not string
+//
 // To add custom decoding types may implement the Unmarshaler interface
+//
 // []byte is decoded like a string
+//
 // bool is decoded from the integer values 1 and 0
 func Unmarshal(data []byte, target interface{}) error {
 	n, err := decode(data, target)
