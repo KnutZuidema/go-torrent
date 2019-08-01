@@ -122,8 +122,16 @@ type tag struct {
 }
 
 func newTag(f reflect.StructField) *tag {
+	if f.PkgPath != "" {
+		return &tag{
+			Skip: true,
+		}
+	}
 	v := f.Tag.Get(StructTagKey)
 	if v == "" {
+		if f.Anonymous {
+			return &tag{}
+		}
 		return &tag{
 			Name: f.Name,
 		}
@@ -135,7 +143,7 @@ func newTag(f reflect.StructField) *tag {
 		}
 	}
 	t := &tag{}
-	if split[0] == "" {
+	if split[0] == "" && !f.Anonymous {
 		t.Name = f.Name
 	}
 	for _, option := range split[1:] {
@@ -150,9 +158,6 @@ func structToMap(rv reflect.Value) map[string]interface{} {
 	dict := make(map[string]interface{})
 	typ := rv.Type()
 	for i := 0; i < rv.NumField(); i++ {
-		if typ.Field(i).PkgPath != "" {
-			continue
-		}
 		t := newTag(typ.Field(i))
 		if t.Skip {
 			continue
@@ -164,9 +169,9 @@ func structToMap(rv reflect.Value) map[string]interface{} {
 			for k, v := range structToMap(rv.Field(i)) {
 				dict[k] = v
 			}
+		} else {
+			dict[t.Name] = rv.Field(i).Interface()
 		}
-		v := rv.Field(i).Interface()
-		dict[t.Name] = v
 	}
 	return dict
 }
