@@ -15,9 +15,9 @@ type Marshaler interface {
 
 // Marshal encodes the given value into a bencode representation
 //
-// Returns ErrInvalidType if the value type is not valid for bencoding, namely float64, float32, complex128, complex64
+// returns ErrInvalidType if the value type is not valid for bencoding, namely float64, float32, complex128, complex64
 //
-// Returns ErrNonStringKey if the key type of a map is not string
+// returns ErrNonStringKey if the key type of a map is not string
 //
 // []byte values are encoded like strings
 //
