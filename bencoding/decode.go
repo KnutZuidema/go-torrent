@@ -120,7 +120,7 @@ func decodeString(data []byte, target *string) (int, error) {
 	}
 	var read int
 	var length []byte
-	for data[read] != StringSeparatorToken {
+	for data[read] != stringSeparatorToken {
 		if read >= len(data) {
 			return 0, ErrEmptyData
 		}
@@ -181,7 +181,7 @@ func decodeIntStr(data []byte, target *string) (int, error) {
 	if len(data) == 0 {
 		return 0, ErrEmptyData
 	}
-	if data[read] != IntToken {
+	if data[read] != intToken {
 		return 0, ErrInvalidInteger
 	}
 	read++
@@ -190,7 +190,7 @@ func decodeIntStr(data []byte, target *string) (int, error) {
 		value = append(value, data[read])
 		read++
 	}
-	for data[read] != EndToken {
+	for data[read] != endToken {
 		switch data[read] {
 		case '1', '2', '3', '4', '5', '6', '7', '8', '9', '0':
 			value = append(value, data[read])
@@ -218,7 +218,7 @@ func decodeList(data []byte, target interface{}) (int, error) {
 		return 0, ErrEmptyData
 	}
 	var read int
-	if data[0] != ListToken {
+	if data[0] != listToken {
 		return 0, ErrInvalidList
 	}
 	read++
@@ -227,7 +227,7 @@ func decodeList(data []byte, target interface{}) (int, error) {
 		return 0, err
 	}
 	res := reflect.MakeSlice(reflect.SliceOf(val.Type().Elem()), 0, 0)
-	for data[read] != EndToken {
+	for data[read] != endToken {
 		v := reflect.New(val.Type().Elem())
 		r, err := decode(data[read:], v.Interface())
 		if err != nil {
@@ -246,7 +246,7 @@ func decodeDict(data []byte, target interface{}) (int, error) {
 		return 0, ErrEmptyData
 	}
 	var read int
-	if data[read] != DictToken {
+	if data[read] != dictToken {
 		return 0, ErrInvalidDict
 	}
 	read++
@@ -258,7 +258,7 @@ func decodeDict(data []byte, target interface{}) (int, error) {
 		return 0, ErrNonStringKey
 	}
 	res := reflect.MakeMap(reflect.MapOf(reflect.TypeOf(""), val.Type().Elem()))
-	for data[read] != EndToken {
+	for data[read] != endToken {
 		var key string
 		r, err := decodeString(data[read:], &key)
 		if err != nil {
@@ -286,7 +286,7 @@ func decodeStruct(data []byte, target interface{}) (int, error) {
 	if len(data) == 0 {
 		return 0, ErrEmptyData
 	}
-	if data[0] != DictToken {
+	if data[0] != dictToken {
 		return 0, ErrInvalidStruct
 	}
 	read := 1
@@ -296,7 +296,7 @@ func decodeStruct(data []byte, target interface{}) (int, error) {
 		tag := newTag(typ.Field(i))
 		nameMapping[tag.Name] = i
 	}
-	for data[read] != EndToken {
+	for data[read] != endToken {
 		var key string
 		r, err := decodeString(data[read:], &key)
 		if err != nil {
@@ -350,14 +350,14 @@ func readNextValue(data []byte) (int, []byte, error) {
 	}
 	var read int
 	switch data[0] {
-	case IntToken:
-		for data[read] != EndToken {
+	case intToken:
+		for data[read] != endToken {
 			read++
 			if read >= len(data) {
 				return 0, nil, ErrInvalidInteger
 			}
 		}
-	case ListToken, DictToken:
+	case listToken, dictToken:
 		var err error
 		read++
 		for err != ErrInvalidToken {

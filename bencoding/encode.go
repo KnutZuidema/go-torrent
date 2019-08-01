@@ -66,19 +66,19 @@ func Marshal(value interface{}) ([]byte, error) {
 }
 
 func encodeString(value string) ([]byte, error) {
-	return []byte(strconv.Itoa(len(value)) + string(StringSeparatorToken) + value), nil
+	return []byte(strconv.Itoa(len(value)) + string(stringSeparatorToken) + value), nil
 }
 
 func encodeInt(value int64) ([]byte, error) {
-	return []byte(string(IntToken) + strconv.FormatInt(value, 10) + string(EndToken)), nil
+	return []byte(string(intToken) + strconv.FormatInt(value, 10) + string(endToken)), nil
 }
 
 func encodeUint(value uint64) ([]byte, error) {
-	return []byte(string(IntToken) + strconv.FormatUint(value, 10) + string(EndToken)), nil
+	return []byte(string(intToken) + strconv.FormatUint(value, 10) + string(endToken)), nil
 }
 
 func encodeList(value []interface{}) ([]byte, error) {
-	res := []byte(string(ListToken))
+	res := []byte(string(listToken))
 	for _, val := range value {
 		d, err := Marshal(val)
 		if err != nil {
@@ -86,12 +86,12 @@ func encodeList(value []interface{}) ([]byte, error) {
 		}
 		res = append(res, d...)
 	}
-	res = append(res, EndToken)
+	res = append(res, endToken)
 	return res, nil
 }
 
 func encodeDict(value map[string]interface{}) ([]byte, error) {
-	res := []byte(string(DictToken))
+	res := []byte(string(dictToken))
 	type keyValuePair struct {
 		key   string
 		value interface{}
@@ -122,7 +122,7 @@ func encodeDict(value map[string]interface{}) ([]byte, error) {
 		}
 		res = append(res, append(key, val...)...)
 	}
-	res = append(res, EndToken)
+	res = append(res, endToken)
 	return res, nil
 }
 
@@ -138,7 +138,7 @@ func newTag(f reflect.StructField) *tag {
 			Skip: true,
 		}
 	}
-	v := f.Tag.Get(StructTagKey)
+	v := f.Tag.Get(structTagKey)
 	if v == "" {
 		if f.Anonymous {
 			return &tag{}
@@ -158,7 +158,7 @@ func newTag(f reflect.StructField) *tag {
 		t.Name = f.Name
 	}
 	for _, option := range split[1:] {
-		if option == OptionOmitEmpty {
+		if option == optionOmitEmpty {
 			t.OmitEmpty = true
 		}
 	}

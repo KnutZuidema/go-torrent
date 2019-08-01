@@ -5,13 +5,13 @@ import (
 )
 
 const (
-	EndToken             = 'e'
-	IntToken             = 'i'
-	ListToken            = 'l'
-	DictToken            = 'd'
-	StringSeparatorToken = ':'
-	StructTagKey         = "bencode"
-	OptionOmitEmpty      = "omitempty"
+	endToken             = 'e'
+	intToken             = 'i'
+	listToken            = 'l'
+	dictToken            = 'd'
+	stringSeparatorToken = ':'
+	structTagKey         = "bencode"
+	optionOmitEmpty      = "omitempty"
 )
 
 var (
