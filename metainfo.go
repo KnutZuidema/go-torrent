@@ -1,7 +1,7 @@
 package torrent
 
 import (
-	"github.com/KnutZuidema/go-torrent/benconding"
+	"github.com/KnutZuidema/go-torrent/bencoding"
 )
 
 // Metainfo files (also known as .torrent files) are bencoded dictionaries
@@ -63,7 +63,7 @@ type File struct {
 
 func NewMetainfoFromBytes(data []byte) (*Metainfo, error) {
 	var info Metainfo
-	if err := benconding.Unmarshal(data, &info); err != nil {
+	if err := bencoding.Unmarshal(data, &info); err != nil {
 		return nil, err
 	}
 	return &info, nil
