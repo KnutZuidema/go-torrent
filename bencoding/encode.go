@@ -7,10 +7,17 @@ import (
 	"strings"
 )
 
+// Marshaler if a type implements this interface its MarshalBEncode method will be used when marshaling the object into
+// a bencode representation
 type Marshaler interface {
 	MarshalBEncode() ([]byte, error)
 }
 
+// Marshal encodes the given value into a bencode representation
+// Returns ErrInvalidType if the value type is not valid for bencoding, namely float64, float32, complex128, complex64
+// Returns ErrNonStringKey if the key type of a map is not string
+// []byte values are encoded like strings
+// bool values are encoded as integers 1 if true and 0 if false
 func Marshal(value interface{}) ([]byte, error) {
 	value = normalize(value)
 	switch v := value.(type) {
