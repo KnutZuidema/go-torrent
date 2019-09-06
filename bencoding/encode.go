@@ -153,7 +153,7 @@ func newTag(f reflect.StructField) *tag {
 			Skip: true,
 		}
 	}
-	t := &tag{}
+	t := &tag{Name: split[0]}
 	if split[0] == "" && !f.Anonymous {
 		t.Name = f.Name
 	}
