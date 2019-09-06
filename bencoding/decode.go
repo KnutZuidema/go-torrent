@@ -305,7 +305,7 @@ func decodeStruct(data []byte, target interface{}) (int, error) {
 		read += r
 		num, ok := nameMapping[key]
 		if !ok {
-			return 0, ErrInvalidStruct
+			continue
 		}
 		v := reflect.New(val.Field(num).Type())
 		r, err = decode(data[read:], v.Interface())
