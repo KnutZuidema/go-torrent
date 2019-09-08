@@ -356,39 +356,29 @@ func readNextValue(data []byte) (int, []byte, error) {
 	var read int
 	switch data[0] {
 	case intToken:
-		for data[read] != endToken {
-			read++
-			if read >= len(data) {
-				return 0, nil, ErrInvalidInteger
-			}
+		var i int64
+		r, err := decodeInt(data, &i)
+		if err != nil {
+			return 0, nil, err
 		}
+		read += r
 	case listToken, dictToken:
-		var err error
-		read++
-		for err != ErrInvalidToken {
+		read++ // read start token
+		for data[read] != endToken {
 			n, _, err := readNextValue(data[read:])
 			if err != nil {
 				return 0, nil, err
 			}
 			read += n
 		}
-		read++
+		read++ // read end token
 	default:
-		if data[read] > '0' && data[read] <= '9' {
-			for data[read] > '0' && data[read] <= '9' {
-				read++
-				if read >= len(data) {
-					return 0, nil, ErrInvalidString
-				}
-			}
-			length, err := strconv.Atoi(string(data[:read]))
-			if err != nil {
-				return 0, nil, ErrInvalidString
-			}
-			read += 1 + length
-		} else {
-			return 0, nil, ErrInvalidToken
+		var s string
+		r, err := decodeString(data, &s)
+		if err != nil {
+			return 0, nil, err
 		}
+		read += r
 	}
 	return read, data[:read], nil
 }
